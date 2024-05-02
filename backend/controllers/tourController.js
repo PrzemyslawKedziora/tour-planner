@@ -1,10 +1,15 @@
 import asyncHandler from "express-async-handler";
-import mongoose from "mongoose";
+import {TourModel} from "../models/tourModel.js";
+import {validateRequest} from "../middlewares/validateUser.js";
 
 const getTours = asyncHandler(async (req, res) => {
-    const userID = req.query.userId;
+    const userId = req.params.userID;
+    const [status, message] = await validateRequest(userId);
+    const tours = await TourModel.find({userId: userId});
+
     return res.json({
-        response: 'its working!'
+        status:status,
+        data: tours
     });
 });
 

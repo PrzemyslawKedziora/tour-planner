@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const tourSchema = mongoose.Schema(
     {
@@ -29,4 +29,5 @@ const tourSchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Tour",tourSchema);
+const TourModel = mongoose.model("Tour",tourSchema);
+export {TourModel};
