@@ -10,8 +10,10 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/tours/:userID',getTours);
+
 router.get('/users/:userID',getUserData);
 router.post('/users',createUser);
+router.post('/users/:userID',updateUser);
 router.delete('/users/:userID',removeUser);
 
 export default router;

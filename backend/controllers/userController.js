@@ -1,12 +1,11 @@
 import asyncHandler from "express-async-handler";
-import mongoose from "mongoose";
 import { UserModel } from "../models/userModel.js"
-import {validateRequest} from "../middlewares/validateUser.js";
+import {validateUser} from "../middlewares/validateUser.js";
 import bcrypt from "bcrypt";
 
 const getUserData = asyncHandler(async(req,res)=>{
     const userId = req.params.userID;
-    const [status, message] = await validateRequest(userId);
+    const [status, message] = await validateUser(userId);
     if(!status){
         return res.json({
             message: message
@@ -30,7 +29,7 @@ const createUser = asyncHandler(async(req,res)=>{
     // }
     const hashedPassword =  await bcrypt.hash(password,10);
     try {
-        const newUser = await UserModel.create({
+        await UserModel.create({
             username,
             email,
             password: hashedPassword
@@ -45,11 +44,28 @@ const createUser = asyncHandler(async(req,res)=>{
     }
 });
 const updateUser = asyncHandler(async(req,res)=>{
-
+    const userId = req.params.userID;
+    const [status, message] = await validateUser(userId);
+    if(!status) {
+        return res.json({
+            message: message
+        });
+    }
+    await UserModel.findById(userId);
+    try {
+       await UserModel.findByIdAndUpdate(userId);
+        return res.json({
+            message: 'User has been updated succesfully!'
+        })
+    }catch (e) {
+        return res.json({
+            message: e
+        })
+    }
 })
 const removeUser = asyncHandler(async(req,res)=>{
     const userId = req.params.userID;
-    const [status, message] = await validateRequest(userId);
+    const [status, message] = await validateUser(userId);
     if(!status) {
         return res.json({
             message: message
