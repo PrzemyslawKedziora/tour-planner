@@ -1,7 +1,7 @@
 import express from  'express';
 import { body, param, query } from 'express-validator';
 
-import { getTours } from '../controllers/tourController.js';
+import {createTour, getTours} from '../controllers/tourController.js';
 import {createUser, getUserData, updateUser, removeUser} from "../controllers/userController.js";
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/tours/:userID',getTours);
+router.post('/tours/:userID',createTour);
 
 router.get('/users/:userID',getUserData);
 router.post('/users',createUser);
