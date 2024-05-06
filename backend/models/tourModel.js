@@ -9,8 +9,10 @@ const tourSchema = mongoose.Schema(
             default:"My new trip"
         },
         pointsToVisit:[{
-          type: mongoose.Schema.Types.ObjectId,
-          ref:"TouristPoint"
+          type: String,
+            min:0,
+            max:255,
+            required:true
         }],
         date:{
             type:Date,
