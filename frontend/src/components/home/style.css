@@ -1,0 +1,5 @@
+link-class,a, a:hover, a:visited, a:active{
+    text-decoration: none;
+    color: inherit;
+    text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black, 2px 2px 0 black;
+}
