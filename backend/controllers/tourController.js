@@ -1,7 +1,23 @@
 import asyncHandler from "express-async-handler";
 import {TourModel} from "../models/tourModel.js";
 import {validateUser} from "../middlewares/validateUser.js";
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
+
+const getAttractions = asyncHandler(async(req,res)=>{
+    const {city} = req.body;
+    try {
+        const apiKey = process.env.API_KEY;
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=tourist+attractions+in+${city}&key=${apiKey}`);
+        const data = await response.data;
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 const getTours = asyncHandler(async (req, res) => {
     const userId = req.params.userID;
     const [status, message] = await validateUser(userId);
@@ -103,4 +119,4 @@ function validateTourRequest(...requestBody) {
     }
     return true;
 }
-export { getTours,createTour,updateTour,removeTour };
+export { getAttractions,getTours,createTour,updateTour,removeTour };

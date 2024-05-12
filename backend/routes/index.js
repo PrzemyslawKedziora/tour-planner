@@ -1,7 +1,7 @@
 import express from  'express';
 import { body, param, query } from 'express-validator';
 
-import {createTour, getTours, removeTour, updateTour} from '../controllers/tourController.js';
+import {createTour, getAttractions, getTours, removeTour, updateTour} from '../controllers/tourController.js';
 import {createUser, getUserData, updateUser, removeUser} from "../controllers/userController.js";
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.get('/tours/:userID',getTours);
 router.post('/tours/:userID',createTour);
 router.put('/tours/:userID/:tourID',updateTour);
 router.delete('/tours/:userID/:tourID',removeTour);
+router.post('/attractions',getAttractions);
 
 router.get('/users/:userID',getUserData);
 router.post('/users',createUser);
