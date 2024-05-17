@@ -17,26 +17,49 @@ const getUserData = asyncHandler(async(req,res)=>{
         data:user
     });
 })
-const createUser = asyncHandler(async(req,res)=>{
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
-    const [status, message] = await validateRequest(userId);
-    if(status) {
+
+const loginUser = asyncHandler(async(req,res)=>{
+    const user = await UserModel.findById(userId);
+    if (!user){
         return res.json({
-            message: message
+            status: false,
+            data:"This user does not exist!"
         });
+    }
+    return res.json({
+        status: true,
+        data:user
+    });
+
+})
+const createUser = asyncHandler(async(req,res)=>{
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+        return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
+    }
+    // const [status, message] = await validateUser(userId);
+    // if(status) {
+    //     return res.json({
+    //         message: message
+    //     });
+    // }
+    const user = await UserModel.findOne({email});
+    if (user){
+        return res.status(409).json({
+            message:"This user already exist!"
+        })
     }
     const hashedPassword =  await bcrypt.hash(password,10);
     try {
         await UserModel.create({
-            username,
-            email,
+            username: username,
+            email: email,
             password: hashedPassword
         }).then(()=>{
-            return res.json({
-                message: "User created succesfully!"
-            })
+            return res.status(201).json({
+                message: "User created successfully!"
+            });
         })
     }
     catch (e) {
@@ -83,4 +106,4 @@ const removeUser = asyncHandler(async(req,res)=>{
        })
    }
 })
-export {getUserData,createUser,updateUser,removeUser}
+export {getUserData,loginUser,createUser,updateUser,removeUser}
