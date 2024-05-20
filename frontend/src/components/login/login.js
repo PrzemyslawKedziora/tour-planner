@@ -1,13 +1,13 @@
 import {useState} from "react";
 
-const NewTourForm = () => {
+const Login = () => {
     const [formData,setFormData] = useState({
         login:'',
         password:''
     })
 
     const logIn = () =>{
-        const response = fetch('http://localhost:5000/attractions',{
+        const response = fetch('http://localhost:5000/login',{
             method:'POST',
             body: JSON.stringify({
                 login: formData.login,
@@ -23,7 +23,8 @@ const NewTourForm = () => {
             <div>
                 <input type="text" name="password" value={formData.password}/>
             </div>
-            <button type="submit"></button>
+            <button type="submit">Log in</button>
         </form>
     </div>
 }
+export default Login;
