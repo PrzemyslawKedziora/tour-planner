@@ -1,13 +1,19 @@
 import { useState } from 'react';
-import { Button, Form, Input } from "./style";
+import {Button, CreatorContainer, Form, Input} from "./style";
+import {RiseLoader} from "react-spinners";
+import {AttractionsContainer} from "../components/home/style";
+import Attraction from "../components/attraction/attraction";
 
-const NewTourForm = () => {
+const NewTourForm = ({creatorMode}) => {
     const [formData, setFormData] = useState({
         city: '',
         date: '',
         numOfTravelers: ''
     });
     const [attractions, setAttractions] = useState([]);
+    const [tourPoints, setTourPoints] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const handleChange = (event) => {
         setFormData({
@@ -18,7 +24,7 @@ const NewTourForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        setIsLoading(true);
         try {
             console.log(formData);
             const response = await fetch('http://localhost:5000/attractions',{
@@ -44,22 +50,47 @@ const NewTourForm = () => {
         } catch (error) {
             console.error(error);
         }
+        finally {
+            setIsLoading(false);
+        }
+    };
+    const addToTourPoints = (attraction) => {
+        setTourPoints([...tourPoints, attraction]);
     };
 
     return (
         <div>
             <Form onSubmit={handleSubmit}>
                 <Input type="text" name="city" placeholder="City to visit..." value={formData.city} onChange={handleChange} />
-                <Input type="date" name="date" value={formData.date} onChange={handleChange} />
-                <Input type="number" name="numOfTravelers" placeholder="Number of travelers..." value={formData.numOfTravelers} onChange={handleChange} />
                 <Button type='submit'>Search</Button>
             </Form>
-
-            {/* Wyświetlanie atrakcji */}
             <ul>
-                {attractions.map(attraction => (
-                    <li key={attraction.id}>{attraction.formatted_address}</li>
-                ))}
+                {isLoading ? <div>
+                    <p>Loading attractions...</p>
+                    <RiseLoader/>
+                </div> : (
+
+                    <AttractionsContainer
+                        style={attractions.length > 0 ? {background: "rgba(226, 227, 223, 0.75)"} : {background: "unset"}}>
+                        <CreatorContainer>
+                            <div>
+                                {attractions.length > 0 && creatorMode ? <p>Wycieczka</p> : ''}
+                                {tourPoints.map(point => (
+                                <div>
+                                    {point.name}
+                                </div>
+                            ))}
+                            </div>
+                            <div>
+                                <p>{attractions.length > 0 ? 'List of Attractions' : ''}</p>
+                                {attractions.map(attraction => (
+                                    <Attraction key={attraction.id} props={attraction} attraction={attraction}
+                                                addToTourPoints={addToTourPoints} creatorMode={creatorMode}/>
+                                ))}
+                            </div>
+                        </CreatorContainer>
+                    </AttractionsContainer>
+                )}
             </ul>
         </div>
     );

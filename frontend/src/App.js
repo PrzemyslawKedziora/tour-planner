@@ -4,6 +4,7 @@ import Index from "./components/home";
 import Tour from "./components/tour/tour";
 import Login from "./components/login/login";
 import Register from "./components/register/register";
+import TourCreator from "./components/tour-creator/tour-creator";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Index/>}/>
             <Route path="/tour" element={<Tour/>}/>
+            <Route path="/tour-creator" element={<TourCreator/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
           </Routes>
