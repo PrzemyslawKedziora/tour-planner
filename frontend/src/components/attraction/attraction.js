@@ -1,6 +1,7 @@
 const Attraction = ({props,attraction, addToTourPoints,creatorMode }) => {
     let isUserLogged = true;
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.preventDefault();
         addToTourPoints(attraction);
     };
 

@@ -3,3 +3,7 @@
   background: url("../assets/background.jpg");
   background-size: cover;
 }
+::-webkit-scrollbar{
+  position: absolute;
+  right: -50px;
+}

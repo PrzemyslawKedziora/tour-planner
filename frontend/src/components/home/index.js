@@ -1,7 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import {Container, InfoBar, UserPanel} from "./style";
 import './style.css';
-import NewTourForm from "../../new-tour/new-tour-form";
+import NewTourForm from "../new-tour/new-tour-form";
 import {Link} from "react-router-dom";
 
 const Index = () =>{

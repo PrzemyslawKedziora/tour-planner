@@ -24,3 +24,7 @@ export const Button = styled.button`
 `
 export const Form = styled.form`
 `
+
+export const CreatorContainer = styled.form`
+    display: flex;
+`
