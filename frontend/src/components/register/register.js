@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import {Form, FormContainer, InputLabel} from "./style";
+import { Form, FormContainer, InputLabel } from "./style";
+import axios from "axios";
+import {Link, redirect} from "react-router-dom";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -50,7 +52,7 @@ const Register = () => {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (formData.password !== formData.repeatPassword) {
             setErrors({
@@ -60,25 +62,30 @@ const Register = () => {
             return;
         }
 
-        fetch('http://localhost:5000/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        try {
+            const response = await axios.post('http://localhost:5000/register', {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password
-            })
-        }).then(res => res.json()).then(res=>{
-            console.log(res)
+            });
+            console.log(response.data);
             setErrors({
                 ...errors,
-                repeatPassword: res.message
-            })
-        });
+                errorMessage: response.data.message
+            });
+            if (response.data.status){
+                setInterval(()=>{
+                    redirect('/login')
+                },1500)
+            }
+        } catch (error) {
+            console.error(error);
+            setErrors({
+                ...errors,
+                errorMessage: 'An error occurred during registration'
+            });
+        }
 
-        console.log('Formularz został wysłany:', formData);
     };
 
     return (
@@ -123,17 +130,20 @@ const Register = () => {
                             placeholder="Repeat Password"
                             value={formData.repeatPassword}
                             onChange={handleChange}
-                            onBlur={() => setIsRepeatPasswordTouched(true)} // Set touched on blur as well
+                            onBlur={() => setIsRepeatPasswordTouched(true)}
                         />
                     </InputLabel>
                     {errors.errorMessage && (
-                        <p style={{color: 'red'}}>{errors.errorMessage}</p>
+                        <p style={{ color: 'red' }}>{errors.errorMessage}</p>
                     )}
                     <button type="submit">Register</button>
+                    <Link to={'/login'}>
+                        <p>Already have account</p>
+                    </Link>
                 </Form>
             </FormContainer>
         </div>
     );
-}
+};
 
 export default Register;
