@@ -1,4 +1,4 @@
-const Attraction = ({props,attraction, addToTourPoints,creatorMode }) => {
+const Attraction = ({attraction, addToTourPoints,creatorMode }) => {
     let isUserLogged = true;
     const handleClick = (e) => {
         e.preventDefault();
@@ -6,8 +6,8 @@ const Attraction = ({props,attraction, addToTourPoints,creatorMode }) => {
     };
 
     return <div>
-        <img src={props.icon} alt={props.name}/>
-        <span>{props.name}</span>
+        <img src={attraction.icon} alt={attraction.name}/>
+        <span>{attraction.name}</span>
         {isUserLogged && creatorMode ? <button onClick={handleClick}>+</button> : ''}
     </div>
 }
