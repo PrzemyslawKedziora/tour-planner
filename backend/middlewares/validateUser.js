@@ -1,6 +1,6 @@
-import {UserModel} from "../models/userModel.js";
+import { UserModel } from "../models/userModel.js";
 
-export async function validateUser(userId) {
+export default async function validateUser(userId) {
     try {
         const user = await UserModel.findById(userId);
         if (!user) {

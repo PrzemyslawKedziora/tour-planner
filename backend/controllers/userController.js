@@ -1,7 +1,8 @@
 import asyncHandler from "express-async-handler";
 import { UserModel } from "../models/userModel.js"
-import {validateUser} from "../middlewares/validateUser.js";
+import validateUser from "../middlewares/validateUser.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const getUserData = asyncHandler(async(req,res)=>{
     const userId = req.params.userID;
@@ -19,34 +20,41 @@ const getUserData = asyncHandler(async(req,res)=>{
 })
 
 const loginUser = asyncHandler(async(req,res)=>{
-    const user = await UserModel.findById(userId);
+    const {email} = req.body;
+    const user = await UserModel.findOne({email});
     if (!user){
         return res.json({
             status: false,
             data:"This user does not exist!"
         });
     }
+    const userData = {
+        id: user.id,
+        username: user.username,
+        email: user.email
+    }
+    const accessToken = jwt.sign(
+        { user: userData },
+        process.env.JWT_PRIVATE_KEY,
+        { expiresIn: "100m" }
+    );
     return res.json({
         status: true,
-        data:user
+        token:accessToken,
+        userId: userData.id || null,
     });
 
-})
+});
 const createUser = asyncHandler(async(req,res)=>{
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
         return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
     }
-    // const [status, message] = await validateUser(userId);
-    // if(status) {
-    //     return res.json({
-    //         message: message
-    //     });
-    // }
     const user = await UserModel.findOne({email});
     if (user){
         return res.status(409).json({
+            status:true,
             message:"This user already exist!"
         })
     }

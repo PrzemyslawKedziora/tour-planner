@@ -18,6 +18,10 @@ const tourSchema = mongoose.Schema(
             type:Date,
             required:false
         },
+        city:{
+            type:String,
+            required:true
+        },
         tourCreator:{
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",

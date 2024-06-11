@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import {TourModel} from "../models/tourModel.js";
-import {validateUser} from "../middlewares/validateUser.js";
+import validateUser from '../middlewares/validateUser.js'
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -19,9 +19,11 @@ const getAttractions = asyncHandler(async(req,res)=>{
     }
 })
 const getTours = asyncHandler(async (req, res) => {
-    const userId = req.params.userID;
-    const [status, message] = await validateUser(userId);
-    const tours = await TourModel.find({userId: userId});
+    const {userID} = req.params;
+    console.log(userID)
+    const [status, message] = await validateUser(userID);
+    console.log(status)
+    const tours = await TourModel.find({tourCreator: userID});
 
     return res.json({
         status:status,
@@ -30,14 +32,14 @@ const getTours = asyncHandler(async (req, res) => {
 });
 
 const createTour = asyncHandler(async (req, res) => {
-    const userId = req.params.userID;
-    const { name, pointsToVisit, date, tourDescription } = req.body;
+    const { userId, name, pointsToVisit, date, tourDescription, city } = req.body;
     let [status, message] = await validateUser(userId);
     if (!status) {
         return res.status(404).json({ status: false, message: message });
     }
 
     const validationResult = validateTourRequest(name, pointsToVisit, date, tourDescription);
+    console.log(validationResult)
     if (!validationResult) {
         return res.status(400).json({ status: false, message: 'Invalid tour request data.' });
     }
@@ -47,6 +49,7 @@ const createTour = asyncHandler(async (req, res) => {
             name,
             pointsToVisit,
             date,
+            city,
             tourCreator: userId,
             tourDescription
         });
@@ -60,7 +63,7 @@ const createTour = asyncHandler(async (req, res) => {
 const updateTour = asyncHandler(async (req, res) => {
     const userId = req.params.userID;
     const tourId = req.params.tourID;
-    const { name, pointsToVisit, date, tourDescription } = req.body;
+    const { name, pointsToVisit, date, tourDescription, city } = req.body;
     let [status, message] = await validateUser(userId);
     if (!status) {
         return res.status(404).json({ status: false, message: message });
@@ -78,6 +81,7 @@ const updateTour = asyncHandler(async (req, res) => {
         tour.name = name;
         tour.pointsToVisit = pointsToVisit;
         tour.date = date;
+        tour.city = city;
         tour.tourDescription = tourDescription;
         await tour.save();
         return res.status(201).json({ status: true, message: 'Tour has been updated successfully!' });

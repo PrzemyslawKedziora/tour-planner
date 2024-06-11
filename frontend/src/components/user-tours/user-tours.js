@@ -50,5 +50,3 @@ const UserTours = () => {
 
 export default UserTours;
 
-//TODO
-//oprogramowac edit wycieczki,dodac tokeny jwt do requestow,zrobic ladny navbar
