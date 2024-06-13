@@ -28,7 +28,7 @@ const Login = () => {
             const dataAboutUser = response.data;
             if (dataAboutUser.status) {
                 sessionStorage.setItem('key', dataAboutUser.token);
-                sessionStorage.setItem('id', dataAboutUser.id);
+                sessionStorage.setItem('id', dataAboutUser.userId);
                 navigate('/tour-creator');
             } else {
                 setErrorMessage(dataAboutUser.data || 'Error logging in');

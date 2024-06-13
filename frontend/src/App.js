@@ -16,6 +16,7 @@ function App() {
             <Route path="/tour" element={<Tour/>}/>
             <Route path="/tour-creator" element={<TourCreator/>}/>
             <Route path="/tours" element={<UserTours/>}/>
+            <Route path="/edit-tour/:tourId" element={<TourCreator />} />
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
           </Routes>
