@@ -61,10 +61,9 @@ const createTour = asyncHandler(async (req, res) => {
 });
 
 const updateTour = asyncHandler(async (req, res) => {
-    const userId = req.params.userID;
-    const tourId = req.params.tourID;
+    const {userID, tourID} = req.params;
     const { name, pointsToVisit, date, tourDescription, city } = req.body;
-    let [status, message] = await validateUser(userId);
+    let [status, message] = await validateUser(userID);
     if (!status) {
         return res.status(404).json({ status: false, message: message });
     }
@@ -73,7 +72,7 @@ const updateTour = asyncHandler(async (req, res) => {
     if (!validationResult) {
         return res.status(400).json({ status: false, message: 'Invalid tour request data.' });
     }
-    const tour = await TourModel.findById(tourId);
+    const tour = await TourModel.findById(tourID);
     if (!tour) {
         return res.status(404).json({status:false,message: 'Cannot find this tour.'});
     }
@@ -114,6 +113,20 @@ const removeTour = asyncHandler(async (req, res) => {
         console.log(e)
     }
 })
+const getTourById = asyncHandler(async (req, res) => {
+    const { tourID } = req.params;
+    try {
+        const tour = await TourModel.findById(tourID);
+        console.log(tour)
+        if (!tour) {
+            return res.status(404).json({ status: false, data: [] });
+        }
+        return res.status(200).json({ status: true, data: tour });
+    } catch (error) {
+        console.error('Error fetching tour:', error);
+        return res.status(500).json({ status: false, data: [] });
+    }
+});
 
 function validateTourRequest(...requestBody) {
     for (let requestItem of requestBody) {
@@ -123,4 +136,4 @@ function validateTourRequest(...requestBody) {
     }
     return true;
 }
-export { getAttractions,getTours,createTour,updateTour,removeTour };
+export { getAttractions,getTours,createTour,updateTour,removeTour, getTourById };
